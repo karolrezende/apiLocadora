@@ -1,5 +1,7 @@
 import { AppDataSource } from "./data-source";
 import app from "./app"
+import { Repository } from "typeorm";
+import { Movie } from "./entities";
 
 AppDataSource.initialize()
   .then(async () => {
@@ -11,3 +13,7 @@ AppDataSource.initialize()
     })
   })
   .catch((err) => console.error(err));
+
+
+//declarações das entidades
+export const getRepositoryMovies: Repository<Movie> = AppDataSource.getRepository(Movie)
