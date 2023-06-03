@@ -6,7 +6,7 @@ import { AppError } from "../error";
 export const ensureNameNotRegistred = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction 
 ): Promise<Response | void> => {
     const nameRequest: string = req.body.name
 
@@ -15,4 +15,6 @@ export const ensureNameNotRegistred = async (
     })
 
     if( movieExists ) throw new AppError("Movie already exists", 409)
+
+    return next()
 };
