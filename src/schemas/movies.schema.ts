@@ -9,3 +9,5 @@ export const movieSchema = z.object({
 })
 
 export const movieSchemaRequest = movieSchema.omit({id: true})
+export const movieSchemaPatch = movieSchema.partial()
+export const movieSchemaRequestPatch = movieSchemaRequest.partial()
