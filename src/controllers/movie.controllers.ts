@@ -11,13 +11,13 @@ export const createMovieController = async (req: Request, res: Response): Promis
     return res.status(201).json(newMovie)
 }
 
-export const getMovieController = async (req:Request, res:Response) =>{
+export const getMovieController = async (req:Request, res:Response): Promise<Response> =>{
     const orderBy: string| null = req.query.order as string
     const sortBy: string | null = req.query.sort as string
-    const perPage: number = Number(req.query.perPage)
-    const page: number = Number(req.query.page)
+    const perPage = req.query.perPage
+    const page = req.query.page
 
     const gettedMovies = await getMoviesService(orderBy, sortBy, perPage, page)
 
-    return gettedMovies
+    return res.status(200).json(gettedMovies)
 }

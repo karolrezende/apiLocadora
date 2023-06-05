@@ -1,21 +1,52 @@
-import { AppError } from "../error"
+import { AppError } from "../error";
+import { TmovieSchema } from "../interfaces/movies.interfaces";
+import { movieSchema } from "../schemas/movies.schema";
+import { getRepositoryMovies } from "../server";
 
 export const getMoviesService = async (
-    orderBy:string|null, 
-    sortBy: string|null, 
-    perPage:number|null, 
-    page:number|null) => {
-        
-    if(sortBy != 'price' && 'duration') throw new AppError("sort by 'price' or 'duration'", 400)
-    if (sortBy === null) sortBy = 'id'
-    if(orderBy !== 'asc' && 'desc') throw new AppError("order by 'asc' or 'desc'", 400)
-    if(orderBy === null) orderBy = 'asc'
-    if(perPage! % 2 !== 0 && perPage! > 5) perPage = 5
-    if(page! % 2 !== 0 ) page = 1
-    let prevPage: string |null = `http://localhost:3000/movies?page=${page!-1}&perPage=${perPage}`   
-    let nextPage: string |null = `http://localhost:3000/movies?page=${page!+1}&perPage=${perPage}`   
+  order: string | null,
+  sort: string | null,
+  perPage: any,
+  page: any
+) => {
+  let reqMovie = {};
 
-    if(page === 1) prevPage = null
+  let nextPage = null;
+  let prevPage = null;
 
+  const baseUrl: string = "http://localhost:3000/movies";
 
-}
+  if (perPage > 5 || perPage < 0 || !perPage) perPage = 5;
+  if (page < 0 || !page) page = 1;
+
+  if (!sort) {
+    reqMovie = {
+      skip: (page - 1) * perPage,
+      take: perPage,
+      order: {
+        id: "asc",
+      },
+    };
+  } else {
+    reqMovie = {
+      skip: (page - 1) * perPage,
+      take: perPage,
+      order: {
+        [sort]: order,
+      },
+    };
+  }
+
+  const [data, count] = await getRepositoryMovies.findAndCount(reqMovie);
+
+  if (count > page * perPage)
+    nextPage = `${baseUrl}?page=${page + 1}&perPage=${perPage}`;
+  if ((page * perPage) / 5 > 1)
+    prevPage = `${baseUrl}?page=${page - 1}&perPage=${perPage}`;
+  return {
+    prevPage,
+    nextPage,
+    count,
+    data,
+  };
+};
