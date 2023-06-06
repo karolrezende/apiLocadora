@@ -8,6 +8,7 @@ import {
 import { createMovieService } from "../services/createMovieService.services";
 import { getMoviesService } from "../services/getMoviesService.services";
 import { patchMovieService } from "../services/patchMovieService.services";
+import { deleteMovieServices } from "../services/deleteMovieServices.services";
 
 export const createMovieController = async (
   req: Request,
@@ -45,3 +46,9 @@ export const patchMovieController = async (
 
     return res.status(201).json(moviePatch)
 };
+
+export const deleteMovieController = async (req: Request, res: Response) => {
+  const movieId: number = Number(req.params.id)
+  await deleteMovieServices(movieId)
+  return res.status(204).send()
+}

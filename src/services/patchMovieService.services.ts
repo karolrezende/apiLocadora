@@ -4,21 +4,21 @@ import { TmovieSchema, TmovieSchemaPatch, TmovieSchemaRequestPatch } from "../in
 import { movieSchema, movieSchemaPatch } from "../schemas/movies.schema"
 import { getRepositoryMovies } from "../server"
 
-export const patchMovieService = async (userId: number, movieBody: TmovieSchemaRequestPatch): Promise<TmovieSchema> => {
+export const patchMovieService = async (movieId: number, movieBody: any): Promise<Movie> => {
    
-    const oldMovie: Movie|null = await getRepositoryMovies.findOneBy({
-        id: userId
+    const oldMovie: Movie |null = await getRepositoryMovies.findOneBy({
+        id: movieId
     })
     
     if(!oldMovie){
         throw new AppError("Movie not found")
     }
 
-    const myMovie= {
+    const myMovie = {
         ...oldMovie,
         ...movieBody
     }
-    const newMovie: TmovieSchema = getRepositoryMovies.create(myMovie)
+    const newMovie = getRepositoryMovies.create(myMovie)
     await getRepositoryMovies.save(newMovie)
 
     const returnMovie: TmovieSchema = movieSchema.parse(newMovie)

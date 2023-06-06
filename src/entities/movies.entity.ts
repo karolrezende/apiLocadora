@@ -9,7 +9,7 @@ class Movie {
     name: string
 
     @Column({nullable:true, type: "varchar", length:120})
-    description?: string | undefined | null
+    description?: string | null | undefined
 
     @Column({type:'int'})
     duration: number
